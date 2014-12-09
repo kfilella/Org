@@ -184,7 +184,6 @@ OpcionQk: .asciiz "Ordenamiento por QuickSort Completado, Se han generado los ar
  la $a0, NewLine
  li $v0,4
  syscall
- 
    
  beq $t5,$zero, loopInicio2	#condicion de numero equivocado 
  
@@ -704,7 +703,7 @@ While1:				#INICIO PRIMER WHILE
 	#if $t7 == 1 ---> ES UN DIGITO
 	beq $t7, $zero, While1	#Si $t7 no es 1, entonces no entra al if y vamos a la siguiente iteracion del while
 	la $s3, aux
-	li $t9,0
+	li $t9,0 #inicia contador de digitos con 0
 While2:				#INICIO SEGUNDO WHILE
 	slti $t0, $t3, 58	#Si $t3<58 -->  $t0=1 else $t0=0
 	slti $t1, $t3, 48	#Si $t3<48 -->  $t1=1 else $t1=0
@@ -744,7 +743,7 @@ FinWhile1:			#FIN PRIMER WHILE
 ###########################  FUNCION PARA LEERE EL ARCHIVO  ######################################    	
 ReadFile:
 	#abro el archivo
-	li $v0, 13 # syscall cargar archivo
+	li $v0, 13
 	la $a0, file1
 	li $a1, 0
 	li $a2, 0

@@ -1,6 +1,5 @@
 
 .data
-array_total: .space 2000
 aux:     .space 16
 grupo1:	 .space 40
 grupo2:	 .space 80
@@ -188,7 +187,7 @@ OpcionQk: .asciiz "Ordenamiento por QuickSort Completado, Se han generado los ar
 
 ########  FUNCION PARA LLENAR LOS 10 ARREGLOS CORRESPONDIENTES A LOS 10 GRUPOS DE ALEATORIOS  ###########
 LlenarArreglos:
-	li $t5,0
+	
 	la $s0, bufferin	#indico la direccion base del string leido del archivo
 	li $t8, -1	#inicializo el registro $t8, que controlara que caracter leido sera el que estemos usando
 	li $s2, 0	#j=0
@@ -297,8 +296,7 @@ FinWhile2:			#FIN SEGUNDO WHILE
 	add $t7, $t7, $s5
 	sw $s4, 0($t7)		#preparo la direccion del indice del arreglo del grupo correspondiente
 	
-	addi $s1, $s1, 1	#i++	
-	addi $t5,$t5, 1 # indice*4 (posicion en el arreglo) para guardar en el arreglo total.	
+	addi $s1, $s1, 1	#i++		
 	j While1
 FinWhile1:			#FIN PRIMER WHILE
 	addi $s2, $s2, 1	#j++		
@@ -402,9 +400,6 @@ TresDigitos:
 	add $t1, $t1, $t4
 Finish:
 	add $v0, $zero, $t1
-	la $s7, array_total
-	add $t4,$t5,$s7
-	sb $v0, 0($t4)
 	jr $ra
 #####################  FUNCION DE BUBBLE SORT  #######################
 
