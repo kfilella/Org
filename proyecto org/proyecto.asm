@@ -18,12 +18,12 @@ tiempos:.space 40
 myOpcion: .word 10
 file1:   .asciiz "C:\\Users\\Kevin\\workspace\\Org\\proyecto org\\numeros.txt"      # nombre del archivo de numeros aleatorios
 file2:   .asciiz "bur_aleatorios.txt"      # nombre del archivo de numeros aleatorios ordenados por burbuja
-file3:   .asciiz "ins_aleatorios.txt"      # nombre del archivo de numeros aleatorios ordenados por inserci髇
+file3:   .asciiz "ins_aleatorios.txt"      # nombre del archivo de numeros aleatorios ordenados por inserci贸n
 file4:   .asciiz "qui_aleatorios.txt"      # nombre del archivo de numeros aleatorios ordenados por quicksort
 file5:   .asciiz "bur_tiempos.txt"      # nombre del archivo de los tiempos que se tomo en ordenar los grupos por burbuja
-file6:   .asciiz "ins_tiempos.txt"      # nombre del archivo de los tiempos que se tomo en ordenar los grupos por inserci髇
+file6:   .asciiz "ins_tiempos.txt"      # nombre del archivo de los tiempos que se tomo en ordenar los grupos por inserci贸n
 file7:   .asciiz "qui_tiempos.txt"      # nombre del archivo de los tiempos que se tomo en ordenar los grupos por quicksort
-espacio2:.asciiz "  "
+espacio2: .asciiz "  "
 NewLine: .asciiz "\n"
 NewLineFile: .space 2
 Input: 		.asciiz "Please enter a value for the array: \n"
@@ -43,12 +43,12 @@ Menu1.3: .asciiz "	3. Salir	\n"
 Menu: .asciiz "***********************************\n"
 Menu2.0: .asciiz "***  Algoritmos de Ordanamiento ***\n"
 Menu2.1: .asciiz " 	1. ejecutar2		    \n"
-Menu2.2: .asciiz " 	2. Inserci髇  		    \n"
+Menu2.2: .asciiz " 	2. Inserci贸n  		    \n"
 Menu2.3: .asciiz " 	3. Quicksort  		    \n"
 Menu2.4: .asciiz " 	4. Atras      		    \n"
 Op: .asciiz "Se Genero el archivo de numeros aleatorios \n"
 OpcionBb: .asciiz "Ordenamiento por BubbleSort Completado, Se han generado los archivos bur_aleatorios.txt y bur_tiempos.txt\n"
-OpcionIn: .asciiz "Ordenamiento por Inserci髇 Completado, Se han generado los archivos ins_aleatorios.txt y ins_tiempos.txt\n"
+OpcionIn: .asciiz "Ordenamiento por Inserci贸n Completado, Se han generado los archivos ins_aleatorios.txt y ins_tiempos.txt\n"
 OpcionQk: .asciiz "Ordenamiento por QuickSort Completado, Se han generado los archivos qui_aleatorios.txt y qui_tiempos.txt\n"
 space: .asciiz " "
 .text
