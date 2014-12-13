@@ -1,18 +1,9 @@
 .data
 array_total: .word 500
-aux:     .space 16
-grupo1:	 .space 40
-grupo2:	 .space 80
-grupo3:	 .space 200
-grupo4:	 .space 400
-grupo5:	 .space 600
-grupo6:	 .space 800
-grupo7:	 .space 1000
-grupo8:	 .space 1200
-grupo9:	 .space 1400
-grupo10: .space 1600
-bufferin:.space 9160
-grupos:	.word 10, 20, 50, 100, 150, 200, 250, 300, 350, 400
+aux:     .space 32
+grupo1:	 .space 2000
+bufferin:.space 4096
+grupos:	.word 500
 tiempos:.space 40
 myOpcion: .word 10
 file1:   .asciiz "numeros.txt"      # nombre del archivo de numeros aleatorios
@@ -212,61 +203,10 @@ LlenarArreglos:
 ForArreglos:				#INICIO FOR
 	li $t0, 0			
 	beq $s2, $t0, Grupo01
-	li $t0, 1
-	beq $s2, $t0, Grupo02
-	li $t0, 2
-	beq $s2, $t0, Grupo03
-	li $t0, 3
-	beq $s2, $t0, Grupo04
-	li $t0, 4
-	beq $s2, $t0, Grupo05
-	li $t0, 5
-	beq $s2, $t0, Grupo06
-	li $t0, 6
-	beq $s2, $t0, Grupo07
-	li $t0, 7
-	beq $s2, $t0, Grupo08
-	li $t0, 8
-	beq $s2, $t0, Grupo09
-Grupo10:
-	li $t6, 400			#Se guarda en $t6 el numero que controlara el while 1
-	la $s5, grupo10			#Se guarda en $s5 la direccion base del arreglo correspondiente al grupo
-	j ContinueArreglos
 Grupo01:
-	li $t6, 10
+	li $t6, 500
 	la $s5, grupo1
 	j ContinueArreglos
-Grupo02:
-	li $t6, 20
-	la $s5, grupo2
-	j ContinueArreglos
-Grupo03:
-	li $t6, 50
-	la $s5, grupo3
-	j ContinueArreglos
-Grupo04:
-	li $t6, 100
-	la $s5, grupo4
-	j ContinueArreglos
-Grupo05:
-	li $t6, 150
-	la $s5, grupo5
-	j ContinueArreglos
-Grupo06:
-	li $t6, 200
-	la $s5, grupo6
-	j ContinueArreglos
-Grupo07:
-	li $t6, 250
-	la $s5, grupo7
-	j ContinueArreglos
-Grupo08:
-	li $t6, 300
-	la $s5, grupo8
-	j ContinueArreglos
-Grupo09:
-	li $t6, 350
-	la $s5, grupo9
 ContinueArreglos:
 	li $s1, 0	#i=0
 While1:				#INICIO PRIMER WHILE
@@ -623,52 +563,12 @@ FinArchivos:
 ForG3:
 	li $t0, 0			
 	beq $s2, $t0, Write1
-	li $t0, 1
-	beq $s2, $t0, Write2
-	li $t0, 2
-	beq $s2, $t0, Write3
-	li $t0, 3
-	beq $s2, $t0, Write4
-	li $t0, 4
-	beq $s2, $t0, Write5
-	li $t0, 5
-	beq $s2, $t0, Write6
-	li $t0, 6
-	beq $s2, $t0, Write7
-	li $t0, 7
-	beq $s2, $t0, Write8
-	li $t0, 8
-	beq $s2, $t0, Write9
-	
-Write10:
-	la $s0, grupo10		#cargo el arreglo correspondiente en $s0
-	j Continue4
+
+
 Write1:
 	la $s0, grupo1		#cargo el arreglo correspondiente en $s0
 	j Continue4
-Write2:
-	la $s0, grupo2		#cargo el arreglo correspondiente en $s0
-	j Continue4
-Write3:
-	la $s0, grupo3		#cargo el arreglo correspondiente en $s0
-	j Continue4
-Write4:
-	la $s0, grupo4		#cargo el arreglo correspondiente en $s0
-	j Continue4
-Write5:
-	la $s0, grupo5		#cargo el arreglo correspondiente en $s0
-	j Continue4
-Write6:
-	la $s0, grupo6		#cargo el arreglo correspondiente en $s0
-	j Continue4
-Write7:
-	la $s0, grupo7		#cargo el arreglo correspondiente en $s0
-	j Continue4
-Write8:
-	la $s0, grupo8		#cargo el arreglo correspondiente en $s0
-	j Continue4
-Write9:
-	la $s0, grupo9		#cargo el arreglo correspondiente en $s0
+
 Continue4:
 
 	li   $v0, 15       	#llamada al sistema para escritura en archivos
