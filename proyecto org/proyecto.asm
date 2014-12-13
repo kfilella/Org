@@ -176,7 +176,7 @@ space: .asciiz " "
 	
 	Ordenar1:
 	la $s0, grupo1		#cargo el arreglo correspondiente en $s0
-	li $s1, 10
+	li $s1, 500
 	j Continue2
 		
 	Continue2:	
@@ -276,7 +276,7 @@ While1:				#INICIO PRIMER WHILE
 	addi $t8, $t8, 1
 	add $t1, $s0, $t8	#preparo la direccion del siguiente indice del arreglo de caracteres
 	lb $t3, 0($t1)		#guardo en $t3 el caracter sacado del arreglo
-	
+	beq $t3, $zero, FinWhile1
 	#if($t3<58 && $t3>48)
 	slti $t0, $t3, 58	#Si $t3<58 -->  $t0=1 else $t0=0
 	slti $t1, $t3, 48	#Si $t3<48 -->  $t1=1 else $t1=0
