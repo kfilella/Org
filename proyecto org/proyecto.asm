@@ -187,9 +187,7 @@ space: .asciiz " "
 	
 	jal BubbleSort
 	jal PrintSorted
-	
-	li $s3, 1
-	jal WriteInFileSorted
+	jal loopFin
 	
  ####################
  la $a0, OpcionBb
@@ -358,6 +356,41 @@ UnirDigitos:
 	bne $t2, $zero, DosDigitos
 	slti $t2, $t9, 4
 	bne $t2, $zero, TresDigitos
+	slti $t2, $t9, 5
+	bne $t2, $zero, CuatroDigitos
+CincoDigitos:
+	#primer digito
+	lw $t4, 0($t0)
+	li $t2, 10000
+	mult $t4, $t2
+	mflo $t4
+	mfhi $t2
+	add $t1, $t1, $t4
+	#segundo digito
+	lw $t4, 4($t0)
+	li $t2, 1000
+	mult $t4, $t2
+	mflo $t4
+	mfhi $t2
+	add $t1, $t1, $t4
+	#tercer digito
+	lw $t4, 8($t0)
+	li $t2, 100
+	mult $t4, $t2
+	mflo $t4
+	mfhi $t2
+	add $t1, $t1, $t4
+	#cuarto digito
+	lw $t4, 12($t0)
+	li $t2, 10
+	mult $t4, $t2
+	mflo $t4
+	mfhi $t2
+	add $t1, $t1, $t4
+	#quinto digito
+	lw $t4, 16($t0)
+	add $t1, $t1, $t4
+	j Finish
 CuatroDigitos:
 	#primer digito
 	lw $t4, 0($t0)
