@@ -1,4 +1,3 @@
-
 .data
 array_total: .word 500
 aux:     .space 16
@@ -16,7 +15,7 @@ bufferin:.space 9160
 grupos:	.word 10, 20, 50, 100, 150, 200, 250, 300, 350, 400
 tiempos:.space 40
 myOpcion: .word 10
-file1:   .asciiz "C:\\Users\\Kevin\\workspace\\Org\\proyecto org\\numeros.txt"      # nombre del archivo de numeros aleatorios
+file1:   .asciiz "C:\\Users\\Usuario\\Desktop\\Org-master\\proyecto org\\numeros.txt"      # nombre del archivo de numeros aleatorios
 file2:   .asciiz "bur_aleatorios.txt"      # nombre del archivo de numeros aleatorios ordenados por burbuja
 file3:   .asciiz "ins_aleatorios.txt"      # nombre del archivo de numeros aleatorios ordenados por inserción
 file4:   .asciiz "qui_aleatorios.txt"      # nombre del archivo de numeros aleatorios ordenados por quicksort
@@ -171,6 +170,26 @@ space: .asciiz " "
 	
 	la $t5, tiempos
 	li $s3, 0
+	
+	li $t0, 0			
+	beq $s3, $t0, Ordenar1
+	
+	Ordenar1:
+	la $s0, grupo1		#cargo el arreglo correspondiente en $s0
+	li $s1, 10
+	j Continue2
+		
+	Continue2:	
+	add $t0, $zero, $v0		
+	addi $sp, $sp, -8
+	sw $t5, 4($sp)
+	sw $t0, 0($sp)	
+	
+	jal BubbleSort
+	jal PrintSorted
+	
+	li $s3, 1
+	jal WriteInFileSorted
 	
  ####################
  la $a0, OpcionBb
@@ -417,131 +436,6 @@ Finish:
 	addi $s7,$s7,4
 	jr $ra
 	
-##### PRINT ARREGLO ######
-#####################  FUNCION DE BUBBLE SORT  #######################
-
-########################
-partition:
-# $a0 contains address of array to sort
-# $a1 contains low (starting index of array to sort)
-# $a2 contains high (ending index of array to sort)
-# $s0 contains address of array to sort
-# $s1 contains low (starting index of array to sort)
-# $s2 contains left
-# $s3 contains right
-# $s4 contains pivot
-
-# $t0 contains temporary
-# $t1 contains temporary
-# $t2 contains temporary
-# $t4 contains constant 4
-addi	$sp, $sp, -24		# make room on stack for 6 registers
-sw	$s0, 4($sp)		# save $s0 on stack
-sw	$s1, 8($sp)		# save $s1 on stack
-sw	$s2, 12($sp)		# save $s2 on stack
-sw	$s3, 16($sp)		# save $s3 on stack
-sw	$s4, 20($sp)		# save $s4 on stack
-sw	$ra, 24($sp)		# save $ra on stack
-
-move	$s0, $a0		# copy param. $a0 into $s0 (addr array)
-move 	$s1, $a1		# copy param. $a1 into $s1 (low)
-
-# initialize left, right, and pivot
-move 	$s2, $s1
-move 	$s3, $a2
-
-li	$t4, 4
-mul	$t0, $s1, $t4
-add	$t0, $t0, $s0
-lw	$s4, 0($t0)
-
-whileQS:
-	blt	$s2, $s3, whileBody
-	j	endWhile
-whileBody:
-
-	while_2:
-		li	$t4, 4
-		mul	$t0, $s3, $t4
-		add	$t0, $t0, $s0
-		lw	$t1, 0($t0)
-		bgt	$t1, $s4, whileBody_2
-		j	endWhile_2
-	whileBody_2:
-		addi	$s3, $s3, -1
-		
-		j	while_2
-	endWhile_2:
-
-
-	while_3:
-		blt	$s2, $s3, andTest
-		j	endWhile_3
-	andTest:
-		li	$t4, 4
-		mul	$t1, $s2, $t4
-		add	$t1, $t1, $s0
-		lw	$t2, 0($t1)
-		ble	$t2, $s4, whileBody_3
-		j	endWhile_3
-	whileBody_3:
-		addi	$s2, $s2, 1
-		
-		j	while_3
-	endWhile_3:
-
-	if_2:
-		blt	$s2, $s3, then_2
-		j	endIf_2
-	then_2:
-
-		move	$a0, $t1
-		move 	$a1, $t0
-		jal	swap
-	endIf_2:
-
-	j	whileQS
-endWhile:
-
-li	$t4, 4
-mul	$t0, $s3, $t4
-add	$t0, $t0, $s0
-lw	$t1, 0($t0)
-
-mul	$t2, $s1, $t4
-add	$t2, $t2, $s0
-sw	$t1, 0($t2)
-
-sw	$s4, 0($t0)
-
-move 	$v0, $s3		# return right
-
-lw	$s0, 4($sp)		# restore $s0 from the stack
-lw	$s1, 8($sp)		# restore $s1 from the stack
-lw	$s2, 12($sp)		# restore $s2 from the stack
-lw	$s3, 16($sp)		# restore $s3 from the stack
-lw	$s4, 20($sp)		# restore $s4 from the stack
-lw	$ra, 24($sp)		# restore $ra from the stack
-addi	$sp, $sp, 24		# restore stack pointer
-
-jr	$ra
-
-##################
-swap:
-# $a0 contains address of operand1
-# $a1 contains address of operand2
-# $t0 contains temp
-# $t1 contains value of operand2
-
-# Since no subprograms are called, NO registers need to be saved and restored.
-
-lw	$t0, 0($a0)
-lw	$t1, 0($a1)
-
-sw	$t1, 0($a0)
-sw	$t0, 0($a1)
-
-jr	$ra
 
 ######################################################################################
 #                           CONVERTIR INT A STRING                                   # 
@@ -611,4 +505,195 @@ ItoA.exit:
   	nop
 #############################################################################
 
+######################################################################
+#####################  FUNCION DE BUBBLE SORT  #######################
+######################################################################
 
+BubbleSort:
+		addi	$t0, $zero, 0		#initiate counter
+		addi	$t1, $zero, 0		#initiate register
+		addi	$t2, $zero, 0		#initiate register
+		addi	$t4, $zero, 0		#initiate register
+		addi	$t5, $zero, 0		#initiate register
+		addi	$t6, $zero, 0		#initiate register
+		addi	$t7, $zero, 0		#initiate register
+		addi	$s2, $zero, 0		#set/reset swap flag
+		sll	$t1, $t0, 2		#$t0 * 4 as offset
+		add	$t1, $t1, $s0		#load the array into $t1
+		addi	$t2, $t1, 4		#load it to use to compare
+	SLoop:
+		addi	$t0, $t0, 1		#increment counter
+		beq	$t0, $s1, ExitLoop	#check if it ever branched to swap and exit
+		lw	$t6, 0($t1)		#put $t1 into $t6
+		lw	$t7, 0($t2)		#put $t2 into $t7
+		bgt	$t6, $t7, Swap		#send the intgers to swap if $t1 < $t2
+		sll	$t1, $t0, 2		#$t0 * 4 as offset
+		add	$t1, $t1, $s0		#load the array into $t1
+		addi	$t2, $t1, 4		#add 4 and load the array into $t2
+		j	SLoop			#start loop over again
+	Swap:
+		lw	$t4, 0($t1)		#load $t6 into $t4
+		lw	$t5, 0($t2)		#load $t7 into $t5
+		sw	$t5, 0($t1)		#swap $t4 into $t7
+		sw	$t4, 0($t2)		#swap $t5 into $t6
+		addi	$s2, $s2, 1		#add 1 to $s2 to check if the program ever came here	
+		j	SLoop			#jump back to the SLoop 
+	ExitLoop:
+		bgtz	$s2, BubbleSort		#start sort over again if the flag $s2 is set
+		jr $ra
+		
+		
+###########################################################################################		
+	
+	PrintSorted:	
+		la	$a0, DisplaySorted	#the title to display the initial array
+		li	$v0, 4			#the value to print a string
+		syscall				#call the function
+		addi	$t0, $zero, 0		#initiate counter
+		sll	$t1, $t0, 2		#$t0 * 4 as offset
+		add	$t1, $t1, $s0		#load the array into $t1
+	PLoop2:
+		lw	$a0, 0($t1)		#load the integer to print in $a0
+		li	$v0, 1			#command to print an integer
+		syscall				#call the command to print the integer
+		la	$a0, Space		#print a space between numbers
+		li	$v0, 4			#load 4 into $v0 to print a string
+		syscall				#call the command
+		addi	$t0, $t0, 1		#increment counter
+		sll	$t1, $t0, 2		#$t0 * 4 to offset
+		add	$t1, $t1, $s0		#load next element in the array
+		bne	$t0, $s1, PLoop2	#keep looping until $t0 == $s1
+		jr $ra
+
+#################################################################################################
+###################  FUNCION PARA ESCRIBIR LOS NUMEROS ORDENADOS EN EL ARCHIVO  #################
+################################################################################################# 
+
+WriteInFileSorted:
+  	#Abro el archivo ordenado.txt
+  	li   $v0, 13       #llamada al sistema para abrir archivos  	
+  	li $t0, 1
+	beq $s3, $t0, Archivo2
+	
+Archivo2:
+	la   $a0, file2     #especifico el nombre del archivo
+	j FinArchivos
+	
+FinArchivos:	
+  	li   $a1, 1        #especifico que abro el archivo para escritura
+  	li   $a2, 0        
+  	syscall            #abro el archivo y el file descriptor se guarda en $v0
+  	add $s6, $v0, $zero      #guardo el file descriptor en $s6   	
+  	la $s3, grupos	#guardo en $s3 la direccion base del arreglo
+  	li $s2, 0	#j=0
+  	
+ForG3:
+	li $t0, 0			
+	beq $s2, $t0, Write1
+	li $t0, 1
+	beq $s2, $t0, Write2
+	li $t0, 2
+	beq $s2, $t0, Write3
+	li $t0, 3
+	beq $s2, $t0, Write4
+	li $t0, 4
+	beq $s2, $t0, Write5
+	li $t0, 5
+	beq $s2, $t0, Write6
+	li $t0, 6
+	beq $s2, $t0, Write7
+	li $t0, 7
+	beq $s2, $t0, Write8
+	li $t0, 8
+	beq $s2, $t0, Write9
+	
+Write10:
+	la $s0, grupo10		#cargo el arreglo correspondiente en $s0
+	j Continue4
+Write1:
+	la $s0, grupo1		#cargo el arreglo correspondiente en $s0
+	j Continue4
+Write2:
+	la $s0, grupo2		#cargo el arreglo correspondiente en $s0
+	j Continue4
+Write3:
+	la $s0, grupo3		#cargo el arreglo correspondiente en $s0
+	j Continue4
+Write4:
+	la $s0, grupo4		#cargo el arreglo correspondiente en $s0
+	j Continue4
+Write5:
+	la $s0, grupo5		#cargo el arreglo correspondiente en $s0
+	j Continue4
+Write6:
+	la $s0, grupo6		#cargo el arreglo correspondiente en $s0
+	j Continue4
+Write7:
+	la $s0, grupo7		#cargo el arreglo correspondiente en $s0
+	j Continue4
+Write8:
+	la $s0, grupo8		#cargo el arreglo correspondiente en $s0
+	j Continue4
+Write9:
+	la $s0, grupo9		#cargo el arreglo correspondiente en $s0
+Continue4:
+
+	li   $v0, 15       	#llamada al sistema para escritura en archivos
+  	add $a0, $s6, $zero     #especifico el file descriptor 
+  	la $a1, corcheteIzq     #especifico la direccion del string que queremos escribir
+  	li $a2, 1 
+  	syscall			#escribo el corchete inicial  
+  	
+  	sll $t5, $s2, 2		#multiplico el indice del arreglo por cuatro para obtener el offset=$t5
+  	add $t5, $t5, $s3	#sumo el offset a la direccion base del arreglo y obtengo la direccion del indice 
+  				#del arreglo=$t5   	
+  	lw $t6, 0($t5)		#guardo en $t6 el valor del indice del arreglo
+  	   	   	
+  	li $s4, 0	#i=0
+  	add $t4, $t6, -1	#temporal para verificar si ya se escribio el ultimo numero 
+For3:
+	#Saco el numero del arreglo  	
+	sll $t0, $s4, 2
+	add $t0, $t0, $s0
+	
+	add $t2, $zero, $zero
+	lw $t2, 0($t0)	 		
+	
+	#Convierto el numero del arreglo a String
+	move $a0, $t2	#envio el numero aleatorio como parametro para convertirlo en string
+	la $a1, buffer	#envio como parametro el buffer donde almacenare el entero convertido a string
+	addi $sp, $sp, -4
+	sw $ra, 0($sp) 	#guardo la direccion de retorno en la pila
+	jal ItoA	#llamo a la funcion para convetir a string
+	add $t0, $v0, $zero	#guardo en $t0 el numero de digitos del aleatorio
+	lw $ra, 0($sp)	#cargo la direccion de retorno de la pila
+	addi $sp, $sp, 4
+  	#Escribo en el archivo bur_aleatorios.txt
+  	li   $v0, 15       #llamada al sistema para escritura en archivos
+  	add $a0, $s6, $zero      #especifico el file descriptor 
+  	la $a1, buffer     #especifico la direccion del string que queremos escribir
+  	add $a2, $zero, $t0
+  	#li $a2, 6 
+  	syscall            #escribo en el archivo  
+  	li   $v0, 15       #llamada al sistema para escritura en archivos
+  	beq $s4, $t4, Corchete3 
+	la $a1, coma     #especifico la direccion del string que queremos escribir
+	j Continue3
+Corchete3:
+	la $a1, corcheteDer     #especifico la direccion del string que queremos escribir
+Continue3:
+	li $a2, 1
+	syscall            #escribo en el archivo  	
+	addi $s4, $s4, 1	#i++		
+	slt $t1, $s4, $t6	#if($s4<$t6) $t1=1; else $t1=0;
+	bne $t1, $zero, For3	#if($s4<$t6) sigue en el for; else sale del for
+	
+	addi $s2, $s2, 1	#j++		
+	slti $t7, $s2, 10	#if($s2<10) $t1=1; else $t1=0;
+	bne $t7, $zero, ForG3	#fin del for grande
+		
+  	#Cierro el archivo 
+  	li   $v0, 16       #llamada al sistema para cerrar archivo
+  	add $a0, $s6, $zero      #especifico el file descriptor
+  	syscall            #cierro el archivo  
+  	jr $ra		#termino mi funcion
