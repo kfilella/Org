@@ -1,9 +1,11 @@
 .data
-array_total: .word 500
+array_odd: .word 506
+array_even: .word 506
+array_total: .word 506
 aux:     .space 20
 grupo1:	 .space 2000
 bufferin:.space 4096
-grupos:	.word 500
+grupos:	.word 506
 tiempos:.space 40
 myOpcion: .word 10
 file1:   .asciiz "numeros.txt"      # nombre del archivo de numeros aleatorios
@@ -184,6 +186,7 @@ space: .asciiz " "
  	syscall  
 	
 	jal PrintSorted
+	jal WriteInFileSorted
 	jal loopFin
 	
  ####################
@@ -210,7 +213,7 @@ ForArreglos:				#INICIO FOR
 	li $t0, 0			
 	beq $s2, $t0, Grupo01
 Grupo01:
-	li $t6, 500
+	li $t6, 506
 	la $s5, grupo1
 	j ContinueArreglos
 ContinueArreglos:
@@ -282,7 +285,7 @@ ReadFile:
 	li $v0, 14
 	add $a0, $s6, $zero
 	la $a1, bufferin
-	li $a2, 9160
+	li $a2, 4096
 	syscall
 	#add $t1, $v0, $zero
 	
@@ -406,7 +409,6 @@ Finish:
 	li $v0, 1 # load system call (print integer) into syscall register 
 	move $a0, $t0 # load argument for syscall 
 	syscall # print element 
-	
 	# print space, 32 is ASCII code for space
 	li $a0, 32
 	li $v0, 11  # syscall number for printing character
@@ -414,75 +416,6 @@ Finish:
 	
 	addi $s7,$s7,4
 	jr $ra
-	
-
-######################################################################################
-#                           CONVERTIR INT A STRING                                   # 
-######################################################################################
-# int ItoA(int, char*)
-# arguments:
-#    $a0 - integer to convert
-#    $a1 - character buffer to write to
-# return:  number of characters in converted string
-#
-ItoA:
-  	bnez $a0, ItoA.non_zero  # first, handle the special case of a value of zero
-  	nop
-  	add $t0, $zero, $zero
-  	li   $t0, '0'
-  	sb   $t0, 0($a1)
-  	sb   $zero, 1($a1)
-  	li   $v0, 1
-  	jr   $ra
-ItoA.non_zero:
-	add $t0, $zero, $zero
-  	addi $t0, $zero, 10     # now check for a negative value
-  	li $v0, 0    
-  	bgtz $a0, ItoA.recurse
-  	nop
-  	add $t1, $zero, $zero
-  	li   $t1, '-'
-  	sb   $t1, 0($a1)
-  	addi $v0, $v0, 1
-  	neg  $a0, $a0
-ItoA.recurse:
-  	addi $sp, $sp, -24
-  	sw   $fp, 8($sp)
-  	addi $fp, $sp, 8
-  	sw   $a0, 4($fp)
-  	sw   $a1, 8($fp)
-  	sw   $ra, -4($fp)
-  	sw   $s0, -8($fp)
-  	sw   $s1, -12($fp)
-   
-  	div  $a0, $t0       # $a0/10
-  	mflo $s0            # $s0 = quotient
-  	mfhi $s1            # s1 = remainder  
-  	beqz $s0, ItoA.write
-ItoA.continue:
-  	move $a0, $s0  
-  	jal ItoA.recurse
-  	nop
-ItoA.write:
-	add $t1, $zero, $zero
-  	add  $t1, $a1, $v0
-  	addi $v0, $v0, 1    
-  	add $t2, $zero, $zero
-  	addi $t2, $s1, 0x30 # convert to ASCII
-  	sb   $t2, 0($t1)    # store in the buffer
-  	sb   $zero, 1($t1)
-  
-ItoA.exit:
-  	lw   $a1, 8($fp)
-  	lw   $a0, 4($fp)
-  	lw   $ra, -4($fp)
-  	lw   $s0, -8($fp)
-  	lw   $s1, -12($fp)
-  	lw   $fp, 8($sp)    
-  	addi $sp, $sp, 24
-  	jr $ra
-  	nop
-#############################################################################
 
 ######################################################################
 #####################  FUNCION DE BUBBLE SORT  #######################
@@ -689,3 +622,71 @@ Continue3:
   	add $a0, $s6, $zero      #especifico el file descriptor
   	syscall            #cierro el archivo  
   	jr $ra		#termino mi funcion
+  	
+ ######################################################################################
+#                           CONVERTIR INT A STRING                                   # 
+######################################################################################
+# int ItoA(int, char*)
+# arguments:
+#    $a0 - integer to convert
+#    $a1 - character buffer to write to
+# return:  number of characters in converted string
+#
+ItoA:
+  	bnez $a0, ItoA.non_zero  # first, handle the special case of a value of zero
+  	nop
+  	add $t0, $zero, $zero
+  	li   $t0, '0'
+  	sb   $t0, 0($a1)
+  	sb   $zero, 1($a1)
+  	li   $v0, 1
+  	jr   $ra
+ItoA.non_zero:
+	add $t0, $zero, $zero
+  	addi $t0, $zero, 10     # now check for a negative value
+  	li $v0, 0    
+  	bgtz $a0, ItoA.recurse
+  	nop
+  	add $t1, $zero, $zero
+  	li   $t1, '-'
+  	sb   $t1, 0($a1)
+  	addi $v0, $v0, 1
+  	neg  $a0, $a0
+ItoA.recurse:
+  	addi $sp, $sp, -24
+  	sw   $fp, 8($sp)
+  	addi $fp, $sp, 8
+  	sw   $a0, 4($fp)
+  	sw   $a1, 8($fp)
+  	sw   $ra, -4($fp)
+  	sw   $s0, -8($fp)
+  	sw   $s1, -12($fp)
+   
+  	div  $a0, $t0       # $a0/10
+  	mflo $s0            # $s0 = quotient
+  	mfhi $s1            # s1 = remainder  
+  	beqz $s0, ItoA.write
+ItoA.continue:
+  	move $a0, $s0  
+  	jal ItoA.recurse
+  	nop
+ItoA.write:
+	add $t1, $zero, $zero
+  	add  $t1, $a1, $v0
+  	addi $v0, $v0, 1    
+  	add $t2, $zero, $zero
+  	addi $t2, $s1, 0x30 # convert to ASCII
+  	sb   $t2, 0($t1)    # store in the buffer
+  	sb   $zero, 1($t1)
+  
+ItoA.exit:
+  	lw   $a1, 8($fp)
+  	lw   $a0, 4($fp)
+  	lw   $ra, -4($fp)
+  	lw   $s0, -8($fp)
+  	lw   $s1, -12($fp)
+  	lw   $fp, 8($sp)    
+  	addi $sp, $sp, 24
+  	jr $ra
+  	nop
+#############################################################################
