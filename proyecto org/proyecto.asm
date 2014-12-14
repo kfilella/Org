@@ -1,6 +1,6 @@
 .data
 array_total: .word 500
-aux:     .space 32
+aux:     .space 20
 grupo1:	 .space 2000
 bufferin:.space 4096
 grupos:	.word 500
@@ -174,9 +174,15 @@ space: .asciiz " "
 	add $t0, $zero, $v0		
 	addi $sp, $sp, -8
 	sw $t5, 4($sp)
-	sw $t0, 0($sp)	
+	sw $t0, 0($sp)	 
 	
-	jal BubbleSort
+	jal InsertionSort
+	
+	## new line
+	la $a0, NewLine
+ 	li $v0,4
+ 	syscall  
+	
 	jal PrintSorted
 	jal loopFin
 	
@@ -517,7 +523,60 @@ BubbleSort:
 		
 		
 ###########################################################################################		
+##################  FUNCION DE ORDENAMIENTO INSERTION SORT  #########################
+InsertionSort:	
+	addi $sp, $sp, -32
+	sw $t0, 28($sp)
+	sw $t1, 24($sp)
+	sw $t2, 20($sp)
+	sw $t3, 16($sp)
+	sw $t4, 12($sp)
+	sw $t5, 8($sp)
+	sw $t6, 4($sp)
+	sw $t7, 0($sp)
+
+	move	$t5, $s0     	#carga el array
+	move	$t0, $s1   	# tamaño del array 
+	li	$t1, 1        	#constante
+	li	$t7, 4        	#constante para offset
+for_compare: 
+	bge	$t1, $t0, end_for     	# condicion t1>=t0 (acum>=tam_array)
+	addi	$t2, $t1, -1		#aux para index
+	mul	$t4, $t1, $t7		# t4 toma un valor del sgt
+	add	$t4, $t5, $t4		# t4 se iguala al sgt elemento del array
+	lw	$t3, 0($t4)		# se toma el elemento de t4 en t3
+while:
+	blt	$t2, 0, end_while	#condicion para tomar el sgt elemento
+	mul	$t4, $t2, $t7          	#reinicia t4 al anterior
+	add	$t4, $t4, $t5		#t4 toma nuevamente el array
+	lw	$t6, 0($t4)		#t6 toma el anterior valor de t4
+	ble	$t6, $t3, end_while	#condicion t6<=t3
+					#FALSA
+	sw	$t6, 4($t4)		#t6 toma el anterior valor de t4
+	addi	$t2, $t2, -1		#t2 disminuye
+
 	
+	j 	while
+end_while:				#VERDADERA
+	mul	$t4, $t2, $t7		#t4 se reinicia
+	add	$t4, $t5, $t4		#t4 toma el valor del array
+	sw	$t3, 4($t4)		#t3 toma el segundo valor de t4
+	addi	$t1, $t1, 1		#t1 se acumula
+	
+	j 	for_compare
+end_for:
+	lw $t7, 0($sp)
+	lw $t6, 4($sp)
+	lw $t5, 8($sp)
+	lw $t4, 12($sp)
+	lw $t3, 16($sp)
+	lw $t2, 20($sp)
+	lw $t1, 24($sp)
+	lw $t0, 28($sp)
+	addi $sp, $sp, 32
+	jr $ra
+
+#################################################################################################
 	PrintSorted:	
 		la	$a0, DisplaySorted	#the title to display the initial array
 		li	$v0, 4			#the value to print a string
