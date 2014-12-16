@@ -7,163 +7,84 @@ grupo1:	 .space 2000
 bufferin:.space 4096
 grupos:	.word 506
 tiempos:.space 40
-myOpcion: .word 10
-file1:   .asciiz "numeros.txt"      # nombre del archivo de numeros aleatorios
-file2:   .asciiz "ordenado.txt"      # nombre del archivo de numeros aleatorios ordenados por burbuja
-file3:   .asciiz "ins_aleatorios.txt"      # nombre del archivo de numeros aleatorios ordenados por inserci贸n
-file4:   .asciiz "qui_aleatorios.txt"      # nombre del archivo de numeros aleatorios ordenados por quicksort
-file5:   .asciiz "bur_tiempos.txt"      # nombre del archivo de los tiempos que se tomo en ordenar los grupos por burbuja
-file6:   .asciiz "ins_tiempos.txt"      # nombre del archivo de los tiempos que se tomo en ordenar los grupos por inserci贸n
-file7:   .asciiz "qui_tiempos.txt"      # nombre del archivo de los tiempos que se tomo en ordenar los grupos por quicksort
+opcion: .word 10
+file1:   .asciiz "numeros.txt"
+file2:   .asciiz "ordenadoAsc.txt"
+file3:   .asciiz "ordenadoDesc.txt"
 espacio2: .asciiz "  "
-NewLine: .asciiz "\n"
+line: .asciiz "\n"
 NewLineFile: .space 2
-Input: 		.asciiz "Please enter a value for the array: \n"
 DisplayInitial:	.asciiz "Contents of the array: "
 DisplaySorted:	.asciiz "Contents of the sorted array: "
 Space: 		.asciiz " "
 coma:	.asciiz ","
 corcheteIzq:	.asciiz "["
 corcheteDer:	.asciiz "]"
-pipe:	.asciiz "|"
 buffer: .space 6		      #creo el buffer donde guardare el string a escribir en el archivo 
 ## LABEL DE LOS MENUS
-Menu1: .asciiz "** Organizacion de Computadores *** \n"
-Menu1.1: .asciiz "	1. ejecutar	\n"
-Menu1.2: .asciiz "	2. Algoritmos de Ordamiento \n"
-Menu1.3: .asciiz "	3. Salir	\n"
-Menu: .asciiz "***********************************\n"
-Menu2.0: .asciiz "***  Algoritmos de Ordanamiento ***\n"
-Menu2.1: .asciiz " 	1. ejecutar2		    \n"
-Menu2.2: .asciiz " 	2. Inserci贸n  		    \n"
-Menu2.3: .asciiz " 	3. Quicksort  		    \n"
-Menu2.4: .asciiz " 	4. Atras      		    \n"
-Op: .asciiz "Se Genero el archivo de numeros aleatorios \n"
-OpcionBb: .asciiz "Ordenamiento por BubbleSort Completado, Se han generado los archivos bur_aleatorios.txt y bur_tiempos.txt\n"
-OpcionIn: .asciiz "Ordenamiento por Inserci贸n Completado, Se han generado los archivos ins_aleatorios.txt y ins_tiempos.txt\n"
-OpcionQk: .asciiz "Ordenamiento por QuickSort Completado, Se han generado los archivos qui_aleatorios.txt y qui_tiempos.txt\n"
+cargarNums: .asciiz "	1. Cargar numeros aleatorios	\n"
+salir: .asciiz "	2. Salir	\n"
+numCargados: .asciiz "\nNumeros aleatorios cargados.\n"
+iguales: .asciiz "======================\n"
+MenuInicio: .asciiz "   Elija una opcion: \n"
+ordenarAsc: .asciiz "  1. Ordenar arreglos de mayor a menor\n"
+ordenarDes: .asciiz "  2. Ordenar arreglos de menor a mayor\n"
+salir1: .asciiz "  3. Salir\n"
 space: .asciiz " "
 .text
 
- 
- ################################
- ### 	MENU PRINCIPAL 
- ################################
- menuPrincipal:
- loopAtras:
- 
- la $a0, NewLine
+ menu1:
+  
+ la $a0, line
  li $v0,4
  syscall  
  
- la $a0, Menu
+ la $a0, iguales
  li $v0,4
  syscall
  
- la $a0, Menu1
+ la $a0, MenuInicio
  li $v0,4
  syscall
  
- la $a0, Menu
+ la $a0, iguales
  li $v0,4
  syscall
  
- la $a0, Menu1.1
+ la $a0, ordenarAsc
  li $v0,4
  syscall
  
+ la $a0, ordenarDes
+ li $v0,4
+ syscall
  
- loopInicio1:
-  #cargado de numeros 1,2,3,4
+ la $a0, salir1
+ li $v0,4
+ syscall
+ 
+ loop2:
+   #cargado de numeros 1,2,3,4
  li $t1, 0x00000031   
  li $t2, 0x00000032
  li $t3, 0x00000033
  li $t4, 0x00000034
+ 
  ## capturamos el valor ingresado 
- la $a0, myOpcion 	#cargando opcion 1
+ la $a0, opcion 	#cargando opcion 1
  li $a1, 2  		#permitiendo tipiear un digito
  li $v0, 8	  	# opcion syscall para escribir
  syscall
  lw $s1, 0($a0)   	#busco el valor digitado
- ##
- 
- ## bloques de control
- 
-  beq $s1,$t3, loopFin	#pregunto por condicion de salida
-  
-  slt $t6, $s1,$t3   		#condicion de ciclo
-  la $a0, NewLine
-  li $v0,4
-  syscall
-   
-  beq $t6,$zero, loopInicio1	#condicion de numero equivocado 
-  
-  beq $s1,$t1, loopImprimir1	# pregunto por condicion = Generacion de Randoms
-  beq $s1,$t2, menuInterno	# pregunto por condicion = Algoritmos 
- 
- ###########################  OPCION GENERAR RANDOMS  #############################
- loopRandoms:
- ##Codigo para generar los randoms y guardarlos en archivo 
- la $a0,Op
- li $v0,4
- syscall
- j menuPrincipal
- 
- ################################
- ### 	MENU SECUNDARIO
- ################################
- 
- menuInterno:
- la $a0 , Menu
- li $v0 , 4
- syscall
- 
- la $a0 , Menu2.0
- li $v0 , 4
- syscall
- 
- la $a0 , Menu
- li $v0 , 4
- syscall
- 
- la $a0 , Menu2.1
- li $v0 , 4
- syscall
- 
- loopInicio2:
-  #cargado de numeros 1,2,3,4
- li $t1, 0x00000031   
- li $t2, 0x00000032
- li $t3, 0x00000033
- li $t4, 0x00000034
- 
- la $a0, myOpcion 	#cargando opcion 1
- li $a1, 2  		#permitiendo tipiear un digito
- li $v0, 8	 	# opcion syscall para escribir
- syscall
- lw $s1, 0($a0)   	#busco el valor digitado
-
+ beq $s1,$t3 loopFin
 ## bloque de controls
- beq $s1,$t4, loopAtras		# pregunto por condicion = opcion 4
  
- slt $t5, $s1,$t4   		#condicion de ciclo
- la $a0, NewLine
- li $v0,4
- syscall
-   
- beq $t5,$zero, loopInicio2	#condicion de numero equivocado 
- 
- beq $s1,$t1, loopImprimir1	# pregunto por condicion = Bubblesort
-
+ beq $s1,$t1, loopOrdenarAsc	# pregunto por condicion = Bubblesort
+ beq $s1,$t2, loopOrdenarDes
 ###################  OPCION BUBBLE SORT  ##################			 			 						 			 			
- loopImprimir1:			#imprimo mi eleccion
- 
+loopOrdenarAsc: 
  	jal ReadFile
 	jal LlenarArreglos
-	
-	la $t5, tiempos
-	li $s3, 0
-	
 	li $t0, 0			
 	beq $s3, $t0, Ordenar1
 	
@@ -181,19 +102,43 @@ space: .asciiz " "
 	jal InsertionSort
 	
 	## new line
-	la $a0, NewLine
+	la $a0, line
  	li $v0,4
  	syscall  
 	
 	jal PrintSorted
 	jal WriteInFileSorted
-	jal loopFin
+	jal menu1
+
+loopOrdenarDes: 
+
+ 	jal ReadFile
+	jal LlenarArreglos
+	li $t0, 0			
+	beq $s3, $t0, Ordenar2
 	
+	Ordenar2:
+	la $s0, grupo1		#cargo el arreglo correspondiente en $s0
+	li $s1, 500
+	j Continue3
+		
+	Continue3:	
+	add $t0, $zero, $v0		
+	addi $sp, $sp, -8
+	sw $t5, 4($sp)
+	sw $t0, 0($sp)	 
+	
+	jal InsertionSortInv
+	
+	## new line
+	la $a0, line
+ 	li $v0,4
+ 	syscall  
+	
+	jal PrintSorted
+	jal WriteInFileSorted1
+	jal menu1		
  ####################
- la $a0, OpcionBb
- li $v0, 4
- syscall
- j menuInterno
  
  
 
@@ -417,44 +362,6 @@ Finish:
 	addi $s7,$s7,4
 	jr $ra
 
-######################################################################
-#####################  FUNCION DE BUBBLE SORT  #######################
-######################################################################
-
-BubbleSort:
-		addi	$t0, $zero, 0		#initiate counter
-		addi	$t1, $zero, 0		#initiate register
-		addi	$t2, $zero, 0		#initiate register
-		addi	$t4, $zero, 0		#initiate register
-		addi	$t5, $zero, 0		#initiate register
-		addi	$t6, $zero, 0		#initiate register
-		addi	$t7, $zero, 0		#initiate register
-		addi	$s2, $zero, 0		#set/reset swap flag
-		sll	$t1, $t0, 2		#$t0 * 4 as offset
-		add	$t1, $t1, $s0		#load the array into $t1
-		addi	$t2, $t1, 4		#load it to use to compare
-	SLoop:
-		addi	$t0, $t0, 1		#increment counter
-		beq	$t0, $s1, ExitLoop	#check if it ever branched to swap and exit
-		lw	$t6, 0($t1)		#put $t1 into $t6
-		lw	$t7, 0($t2)		#put $t2 into $t7
-		bgt	$t6, $t7, Swap		#send the intgers to swap if $t1 < $t2
-		sll	$t1, $t0, 2		#$t0 * 4 as offset
-		add	$t1, $t1, $s0		#load the array into $t1
-		addi	$t2, $t1, 4		#add 4 and load the array into $t2
-		j	SLoop			#start loop over again
-	Swap:
-		lw	$t4, 0($t1)		#load $t6 into $t4
-		lw	$t5, 0($t2)		#load $t7 into $t5
-		sw	$t5, 0($t1)		#swap $t4 into $t7
-		sw	$t4, 0($t2)		#swap $t5 into $t6
-		addi	$s2, $s2, 1		#add 1 to $s2 to check if the program ever came here	
-		j	SLoop			#jump back to the SLoop 
-	ExitLoop:
-		bgtz	$s2, BubbleSort		#start sort over again if the flag $s2 is set
-		jr $ra
-		
-		
 ###########################################################################################		
 ##################  FUNCION DE ORDENAMIENTO INSERTION SORT  #########################
 InsertionSort:	
@@ -508,7 +415,61 @@ end_for:
 	lw $t0, 28($sp)
 	addi $sp, $sp, 32
 	jr $ra
+###########################################################################################		
+##################  FUNCION DE ORDENAMIENTO INSERTION SORT INVERTIDO  #########################
+InsertionSortInv:	
+	addi $sp, $sp, -32
+	sw $t0, 28($sp)
+	sw $t1, 24($sp)
+	sw $t2, 20($sp)
+	sw $t3, 16($sp)
+	sw $t4, 12($sp)
+	sw $t5, 8($sp)
+	sw $t6, 4($sp)
+	sw $t7, 0($sp)
 
+	move	$t5, $s0     	#carga el array
+	move	$t0, $s1   	# tama駉 del array 
+	li	$t1, 1        	#constante
+	li	$t7, 4        	#constante para offset
+for_compare1: 
+	bge	$t1, $t0, end_for1     	# condicion t1>=t0 (acum>=tam_array)
+	addi	$t2, $t1, -1		#aux para index
+	mul	$t4, $t1, $t7		# t4 toma un valor del sgt
+	add	$t4, $t5, $t4		# t4 se iguala al sgt elemento del array
+	lw	$t3, 0($t4)		# se toma el elemento de t4 en t3
+while1:
+	blt	$t2, 0, end_while1	#condicion para tomar el sgt elemento
+	mul	$t4, $t2, $t7          	#reinicia t4 al anterior
+	add	$t4, $t4, $t5		#t4 toma nuevamente el array
+	lw	$t6, 0($t4)		#t6 toma el anterior valor de t4
+	bge	$t6, $t3, end_while1	#condicion t6<=t3
+					#FALSA
+	sw	$t6, 4($t4)		#t6 toma el anterior valor de t4
+	addi	$t2, $t2, -1		#t2 disminuye
+
+	
+	j 	while1
+end_while1:				#VERDADERA
+	mul	$t4, $t2, $t7		#t4 se reinicia
+	add	$t4, $t5, $t4		#t4 toma el valor del array
+	sw	$t3, 4($t4)		#t3 toma el segundo valor de t4
+	addi	$t1, $t1, 1		#t1 se acumula
+	
+	j 	for_compare1
+end_for1:
+	lw $t7, 0($sp)
+	lw $t6, 4($sp)
+	lw $t5, 8($sp)
+	lw $t4, 12($sp)
+	lw $t3, 16($sp)
+	lw $t2, 20($sp)
+	lw $t1, 24($sp)
+	lw $t0, 28($sp)
+	addi $sp, $sp, 32
+	jr $ra
+
+#################################################################################################
 #################################################################################################
 	PrintSorted:	
 		la	$a0, DisplaySorted	#the title to display the initial array
@@ -565,9 +526,6 @@ Continue4:
 
 	li   $v0, 15       	#llamada al sistema para escritura en archivos
   	add $a0, $s6, $zero     #especifico el file descriptor 
-  	la $a1, corcheteIzq     #especifico la direccion del string que queremos escribir
-  	li $a2, 1 
-  	syscall			#escribo el corchete inicial  
   	
   	sll $t5, $s2, 2		#multiplico el indice del arreglo por cuatro para obtener el offset=$t5
   	add $t5, $t5, $s3	#sumo el offset a la direccion base del arreglo y obtengo la direccion del indice 
@@ -601,12 +559,9 @@ For3:
   	#li $a2, 6 
   	syscall            #escribo en el archivo  
   	li   $v0, 15       #llamada al sistema para escritura en archivos
-  	beq $s4, $t4, Corchete3 
 	la $a1, coma     #especifico la direccion del string que queremos escribir
-	j Continue3
-Corchete3:
-	la $a1, corcheteDer     #especifico la direccion del string que queremos escribir
-Continue3:
+	j Continue0
+Continue0:
 	li $a2, 1
 	syscall            #escribo en el archivo  	
 	addi $s4, $s4, 1	#i++		
@@ -614,7 +569,7 @@ Continue3:
 	bne $t1, $zero, For3	#if($s4<$t6) sigue en el for; else sale del for
 	
 	addi $s2, $s2, 1	#j++		
-	slti $t7, $s2, 10	#if($s2<10) $t1=1; else $t1=0;
+	slti $t7, $s2, 1	#if($s2<10) $t1=1; else $t1=0;
 	bne $t7, $zero, ForG3	#fin del for grande
 		
   	#Cierro el archivo 
@@ -622,7 +577,94 @@ Continue3:
   	add $a0, $s6, $zero      #especifico el file descriptor
   	syscall            #cierro el archivo  
   	jr $ra		#termino mi funcion
+
+#################################################################################################
+###################  FUNCION PARA ESCRIBIR LOS NUMEROS ORDENADOS EN EL ARCHIVO  #################
+################################################################################################# 
+
+WriteInFileSorted1:
+  	#Abro el archivo ordenado.txt
+  	li   $v0, 13       #llamada al sistema para abrir archivos  	
+  	li $t0, 1
+	beq $s3, $t0, Archivo3
+	
+Archivo3:
+	la   $a0, file3     #especifico el nombre del archivo
+	j FinArchivos1
+	
+FinArchivos1:	
+  	li   $a1, 1        #especifico que abro el archivo para escritura
+  	li   $a2, 0        
+  	syscall            #abro el archivo y el file descriptor se guarda en $v0
+  	add $s6, $v0, $zero      #guardo el file descriptor en $s6   	
+  	la $s3, grupos	#guardo en $s3 la direccion base del arreglo
+  	li $s2, 0	#j=0
   	
+ForG4:
+	li $t0, 0			
+	beq $s2, $t0, Write2
+
+
+Write2:
+	la $s0, grupo1		#cargo el arreglo correspondiente en $s0
+	j Continue11
+
+Continue11:
+
+	li   $v0, 15       	#llamada al sistema para escritura en archivos
+  	add $a0, $s6, $zero     #especifico el file descriptor 
+  	
+  	sll $t5, $s2, 2		#multiplico el indice del arreglo por cuatro para obtener el offset=$t5
+  	add $t5, $t5, $s3	#sumo el offset a la direccion base del arreglo y obtengo la direccion del indice 
+  				#del arreglo=$t5   	
+  	lw $t6, 0($t5)		#guardo en $t6 el valor del indice del arreglo
+  	   	   	
+  	li $s4, 0	#i=0
+  	add $t4, $t6, -1	#temporal para verificar si ya se escribio el ultimo numero 
+For4:
+	#Saco el numero del arreglo  	
+	sll $t0, $s4, 2
+	add $t0, $t0, $s0
+	
+	add $t2, $zero, $zero
+	lw $t2, 0($t0)	 		
+	
+	#Convierto el numero del arreglo a String
+	move $a0, $t2	#envio el numero aleatorio como parametro para convertirlo en string
+	la $a1, buffer	#envio como parametro el buffer donde almacenare el entero convertido a string
+	addi $sp, $sp, -4
+	sw $ra, 0($sp) 	#guardo la direccion de retorno en la pila
+	jal ItoA	#llamo a la funcion para convetir a string
+	add $t0, $v0, $zero	#guardo en $t0 el numero de digitos del aleatorio
+	lw $ra, 0($sp)	#cargo la direccion de retorno de la pila
+	addi $sp, $sp, 4
+  	#Escribo en el archivo bur_aleatorios.txt
+  	li   $v0, 15       #llamada al sistema para escritura en archivos
+  	add $a0, $s6, $zero      #especifico el file descriptor 
+  	la $a1, buffer     #especifico la direccion del string que queremos escribir
+  	add $a2, $zero, $t0
+  	#li $a2, 6 
+  	syscall            #escribo en el archivo  
+  	li   $v0, 15       #llamada al sistema para escritura en archivos
+	la $a1, coma     #especifico la direccion del string que queremos escribir
+	j Continue01
+Continue01:
+	li $a2, 1
+	syscall            #escribo en el archivo  	
+	addi $s4, $s4, 1	#i++		
+	slt $t1, $s4, $t6	#if($s4<$t6) $t1=1; else $t1=0;
+	bne $t1, $zero, For4	#if($s4<$t6) sigue en el for; else sale del for
+	
+	addi $s2, $s2, 1	#j++		
+	slti $t7, $s2, 1	#if($s2<10) $t1=1; else $t1=0;
+	bne $t7, $zero, ForG4	#fin del for grande
+		
+  	#Cierro el archivo 
+  	li   $v0, 16       #llamada al sistema para cerrar archivo
+  	add $a0, $s6, $zero      #especifico el file descriptor
+  	syscall            #cierro el archivo  
+  	jr $ra		#termino mi funcion	
+	
  ######################################################################################
 #                           CONVERTIR INT A STRING                                   # 
 ######################################################################################
