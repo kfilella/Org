@@ -14,8 +14,8 @@ file3:   .asciiz "ordenadoDesc.txt"
 espacio2: .asciiz "  "
 line: .asciiz "\n"
 NewLineFile: .space 2
-DisplayInitial:	.asciiz "Contents of the array: "
-DisplaySorted:	.asciiz "Contents of the sorted array: "
+DisplayInitial:	.asciiz "Contenido del arreglo: "
+DisplaySorted:	.asciiz "Contenido del arreglo ordenado: "
 Space: 		.asciiz " "
 coma:	.asciiz ","
 corcheteIzq:	.asciiz "["
@@ -24,12 +24,12 @@ buffer: .space 6		      #creo el buffer donde guardare el string a escribir en e
 ## LABEL DE LOS MENUS
 cargarNums: .asciiz "	1. Cargar numeros aleatorios	\n"
 salir: .asciiz "	2. Salir	\n"
-numCargados: .asciiz "\nNumeros aleatorios cargados.\n"
+numCargados: .asciiz "\n Numeros aleatorios cargados.\n"
 iguales: .asciiz "======================\n"
 MenuInicio: .asciiz "   Elija una opcion: \n"
-ordenarAsc: .asciiz "  1. Ordenar arreglos de mayor a menor\n"
-ordenarDes: .asciiz "  2. Ordenar arreglos de menor a mayor\n"
-salir1: .asciiz "  3. Salir\n"
+ordenarAsc: .asciiz "  1. Ordenar arreglos de forma descendente \n"
+ordenarDes: .asciiz "  2. Ordenar arreglos de forma ascendente\n"
+salir1: .asciiz "  3. Salir \n"
 space: .asciiz " "
 .text
 
@@ -72,7 +72,7 @@ space: .asciiz " "
  
  ## capturamos el valor ingresado 
  la $a0, opcion 	#cargando opcion 1
- li $a1, 2  		#permitiendo tipiear un digito
+ li $a1, 2  		#permitiendo tipear un digito
  li $v0, 8	  	# opcion syscall para escribir
  syscall
  lw $s1, 0($a0)   	#busco el valor digitado
@@ -81,6 +81,7 @@ space: .asciiz " "
  
  beq $s1,$t1, loopOrdenarAsc	# pregunto por condicion = Bubblesort
  beq $s1,$t2, loopOrdenarDes
+
 ###################  OPCION BUBBLE SORT  ##################			 			 						 			 			
 loopOrdenarAsc: 
  	jal ReadFile
@@ -142,7 +143,7 @@ loopOrdenarDes:
  
  
 
- #cierra el programa
+ #termina el programa
  loopFin:																																					
  li $v0, 10
  syscall
@@ -166,59 +167,59 @@ ContinueArreglos:
 While1:				#INICIO PRIMER WHILE
 	slt $t1, $s1, $t6	#if($s1<$t6) $t1=1; else $t1=0;
 	beq $t1, $zero, FinWhile1	#if($s1<$t6) sigue en el for; else sale del for
-	#tomo el siguiente caracter del archivo
+	#se toma el sgte caracter del archivo
 	addi $t8, $t8, 1
-	add $t1, $s0, $t8	#preparo la direccion del siguiente indice del arreglo de caracteres
-	lb $t3, 0($t1)		#guardo en $t3 el caracter sacado del arreglo
+	add $t1, $s0, $t8	#se prepara la dircc del sgte indice del arreglo de chars
+	lb $t3, 0($t1)		#guardo en $t3 el caracter que fue sacado del arreglo
 	beq $t3, $zero, FinWhile1
 	#if($t3<58 && $t3>48)
-	slti $t0, $t3, 58	#Si $t3<58 -->  $t0=1 else $t0=0
-	slti $t1, $t3, 48	#Si $t3<48 -->  $t1=1 else $t1=0
+	slti $t0, $t3, 58	 #Si $t3<58 -->  $t0=1 sino $t0=0
+	slti $t1, $t3, 48	 #Si $t3<48 -->  $t1=1 sino $t1=0
 	xor $t7, $t0, $t1
 	
-	#if $t7 == 1 ---> ES UN DIGITO
-	beq $t7, $zero, While1	#Si $t7 no es 1, entonces no entra al if y vamos a la siguiente iteracion del while
+	#if $t7 == 1 ---> es un digito
+	beq $t7, $zero, While1	#Si $t7 != 1, entonces no entra al if se va a la sgte iteracion del while
 	la $s3, aux
 	li $t9,0 #inicia contador de digitos con 0
-While2:				#INICIO SEGUNDO WHILE
-	slti $t0, $t3, 58	#Si $t3<58 -->  $t0=1 else $t0=0
-	slti $t1, $t3, 48	#Si $t3<48 -->  $t1=1 else $t1=0
+While2:				#Inicio del While 2
+	slti $t0, $t3, 58	#Si $t3<58 -->  $t0=1 sino $t0=0
+	slti $t1, $t3, 48	#Si $t3<48 -->  $t1=1 sino $t1=0
 	xor $t7, $t0, $t1
-	beq $t7, $zero, FinWhile2	#Si $t7 no es 1, entonces no entra al while y continua
+	beq $t7, $zero, FinWhile2	#Si $t7 != 1, entonces no entra al while y continua
 	sll $t7, $t9, 2
 	add $t7, $t7, $s3
-	add $t3, $t3, -48	#convierto el caracter en digito
-	sw $t3, 0($t7)		#guardo el digito en el arreglo aux
+	add $t3, $t3, -48	#see convierte el caracter en digito
+	sw $t3, 0($t7)		#guardo el digito en arreglo aux
 	#tomo el siguiente caracter del archivo
 	addi $t8, $t8, 1
-	add $t7, $s0, $t8	#preparo la direccion del siguiente indice del arreglo de caracteres
-	lb $t3, 0($t7)		#guardo en $t3 el caracter sacado del arreglo
+	add $t7, $s0, $t8	#preparo la direccion del sgte indice del arreglo de chars
+	lb $t3, 0($t7)		#guardo en $t3 el caracter q he sacado del arreglo
 	addi $t9, $t9, 1
 	j While2	
-FinWhile2:			#FIN SEGUNDO WHILE
+FinWhile2:			#Final while2
 	addi $sp, $sp, -4
-	sw $ra, 0($sp) 		#guardo la direccion de retorno enla pila
+	sw $ra, 0($sp) 		#se guarda la direccion de retorno en stack
 	jal UnirDigitos	
-	lw $ra, 0($sp)		#cargo la direciion de retorno de la pila
+	lw $ra, 0($sp)		#cargo la direccion de retorno de stack
 	addi $sp, $sp, 4
 	
-	add $s4, $zero, $v0	#guardo en $s4 el int ya convertido
+	add $s4, $zero, $v0	#se guarda en $s4 el int ya convertido
 	
 	sll $t7, $s1, 2
 	add $t7, $t7, $s5
-	sw $s4, 0($t7)		#preparo la direccion del indice del arreglo del grupo correspondiente
+	sw $s4, 0($t7)		#se prepara la direccion del indice del arreglo del grupo correspondiente
 	
-	addi $s1, $s1, 1	#i++		
+	addi $s1, $s1, 1	#i=i+1		
 	j While1
-FinWhile1:			#FIN PRIMER WHILE
-	addi $s2, $s2, 1	#j++		
-	slti $t7, $s2, 10	#if($s2<10) $t7=1; else $t7=0;
-	bne $t7, $zero, ForArreglos	#FIN FOR
-	jr $ra   		#termino la funcion llenar arreglos
+FinWhile1:			#Final wuile1
+	addi $s2, $s2, 1	#j=j+1		
+	slti $t7, $s2, 10	#if($s2<10) $t7=1; sino $t7=0;
+	bne $t7, $zero, ForArreglos	#Final de bucle for
+	jr $ra   		#Se termina la funcion llenar arreglos
 
-###########################  FUNCION PARA LEERE EL ARCHIVO  ######################################    	
+###########################  FUNCION PARA LEER EL ARCHIVO  ##############################    	
 ReadFile:
-	#abro el archivo
+	#se abre el archivo
 	li $v0, 13
 	la $a0, file1
 	li $a1, 0
@@ -226,7 +227,7 @@ ReadFile:
 	syscall
 	add $s6, $v0, $zero
 	
-	#leo del archivo
+	#se lee del archivo
 	li $v0, 14
 	add $a0, $s6, $zero
 	la $a1, bufferin
@@ -240,7 +241,7 @@ ReadFile:
   	syscall            #cierro el archivo  
   	jr $ra		#termino mi funcion
   	
-###############  FUNCION PARA CONCATENAR LOS DIGITOS DEL NUMERO ALEATORIO LEIDO DEL ARCHIVO  #############
+###############  CONCATENAR LOS DIGITOS DEL NUMERO ALEATORIO OBTENIDO DEL ARCHIVO  #############
 UnirDigitos:	
 	la $t0, aux
 	add $t1, $zero, $zero
@@ -376,7 +377,7 @@ InsertionSort:
 	sw $t7, 0($sp)
 
 	move	$t5, $s0     	#carga el array
-	move	$t0, $s1   	# tamaño del array 
+	move	$t0, $s1   	# tamaÃ±o del array 
 	li	$t1, 1        	#constante
 	li	$t7, 4        	#constante para offset
 for_compare: 
@@ -429,7 +430,7 @@ InsertionSortInv:
 	sw $t7, 0($sp)
 
 	move	$t5, $s0     	#carga el array
-	move	$t0, $s1   	# tamaño del array 
+	move	$t0, $s1   	# tamaÃ±o del array 
 	li	$t1, 1        	#constante
 	li	$t7, 4        	#constante para offset
 for_compare1: 
