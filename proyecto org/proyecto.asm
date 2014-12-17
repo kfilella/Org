@@ -417,7 +417,7 @@ end_for:
 	addi $sp, $sp, 32
 	jr $ra
 ###########################################################################################		
-##################  FUNCION DE ORDENAMIENTO INSERTION SORT INVERTIDO  #########################
+##################  Funcion ordenamiento insertion sort invertido  #########################
 InsertionSortInv:	
 	addi $sp, $sp, -32
 	sw $t0, 28($sp)
@@ -429,33 +429,33 @@ InsertionSortInv:
 	sw $t6, 4($sp)
 	sw $t7, 0($sp)
 
-	move	$t5, $s0     	#carga el array
-	move	$t0, $s1   	# tamaño del array 
+	move	$t5, $s0     	#cargado del arreglo
+	move	$t0, $s1   	# tamaño del arreglo 
 	li	$t1, 1        	#constante
 	li	$t7, 4        	#constante para offset
 for_compare1: 
-	bge	$t1, $t0, end_for1     	# condicion t1>=t0 (acum>=tam_array)
+	bge	$t1, $t0, end_for1     	# condicion t1>=t0 (acum>=tam_arreglo)
 	addi	$t2, $t1, -1		#aux para index
 	mul	$t4, $t1, $t7		# t4 toma un valor del sgt
-	add	$t4, $t5, $t4		# t4 se iguala al sgt elemento del array
+	add	$t4, $t5, $t4		# t4 se iguala al sgt elemento del arreglo
 	lw	$t3, 0($t4)		# se toma el elemento de t4 en t3
 while1:
 	blt	$t2, 0, end_while1	#condicion para tomar el sgt elemento
 	mul	$t4, $t2, $t7          	#reinicia t4 al anterior
-	add	$t4, $t4, $t5		#t4 toma nuevamente el array
+	add	$t4, $t4, $t5		#t4 toma nuevamente el arreglo
 	lw	$t6, 0($t4)		#t6 toma el anterior valor de t4
 	bge	$t6, $t3, end_while1	#condicion t6<=t3
-					#FALSA
+					#es falsa
 	sw	$t6, 4($t4)		#t6 toma el anterior valor de t4
 	addi	$t2, $t2, -1		#t2 disminuye
 
 	
 	j 	while1
-end_while1:				#VERDADERA
+end_while1:				#es verdadera
 	mul	$t4, $t2, $t7		#t4 se reinicia
-	add	$t4, $t5, $t4		#t4 toma el valor del array
+	add	$t4, $t5, $t4		#t4 toma el valor del arreglo
 	sw	$t3, 4($t4)		#t3 toma el segundo valor de t4
-	addi	$t1, $t1, 1		#t1 se acumula
+	addi	$t1, $t1, 1		#t1 se va acumulando
 	
 	j 	for_compare1
 end_for1:
@@ -473,27 +473,27 @@ end_for1:
 #################################################################################################
 #################################################################################################
 	PrintSorted:	
-		la	$a0, DisplaySorted	#the title to display the initial array
-		li	$v0, 4			#the value to print a string
-		syscall				#call the function
-		addi	$t0, $zero, 0		#initiate counter
-		sll	$t1, $t0, 2		#$t0 * 4 as offset
-		add	$t1, $t1, $s0		#load the array into $t1
+		la	$a0, DisplaySorted	#el titulo a mostrar el arreglo inicial
+		li	$v0, 4			#el valor para imprimir un string
+		syscall				#llama la funcion
+		addi	$t0, $zero, 0		#inicia contador
+		sll	$t1, $t0, 2		#$t0 * 4 como offset
+		add	$t1, $t1, $s0		#carga el arreglo en $t1
 	PLoop2:
-		lw	$a0, 0($t1)		#load the integer to print in $a0
-		li	$v0, 1			#command to print an integer
-		syscall				#call the command to print the integer
-		la	$a0, Space		#print a space between numbers
-		li	$v0, 4			#load 4 into $v0 to print a string
-		syscall				#call the command
-		addi	$t0, $t0, 1		#increment counter
-		sll	$t1, $t0, 2		#$t0 * 4 to offset
-		add	$t1, $t1, $s0		#load next element in the array
-		bne	$t0, $s1, PLoop2	#keep looping until $t0 == $s1
+		lw	$a0, 0($t1)		#carga el entero para imprimir en $a0
+		li	$v0, 1			#Manda a imprimir una entero
+		syscall				#Llama al comando imprimir una entero
+		la	$a0, Space		#imprime espacio entre numeros
+		li	$v0, 4			#carga 4 en $v0 para imprimir un string
+		syscall				#llama el commando
+		addi	$t0, $t0, 1		#incrementa contador
+		sll	$t1, $t0, 2		#$t0 * 4 al offset
+		add	$t1, $t1, $s0		#carga proximo elemento en el arreglo
+		bne	$t0, $s1, PLoop2	#se mantiene en el lazo hasta $t0 == $s1
 		jr $ra
 
 #################################################################################################
-###################  FUNCION PARA ESCRIBIR LOS NUMEROS ORDENADOS EN EL ARCHIVO  #################
+###################  Funcion escribe los numeros ordenados en archivo  #################
 ################################################################################################# 
 
 WriteInFileSorted:
@@ -529,8 +529,8 @@ Continue4:
   	add $a0, $s6, $zero     #especifico el file descriptor 
   	
   	sll $t5, $s2, 2		#multiplico el indice del arreglo por cuatro para obtener el offset=$t5
-  	add $t5, $t5, $s3	#sumo el offset a la direccion base del arreglo y obtengo la direccion del indice 
-  				#del arreglo=$t5   	
+  	add $t5, $t5, $s3	#se suma el offset a la direccion base del arreglo y obtengo la direccion del indice del arreglo=$t5
+  				   	
   	lw $t6, 0($t5)		#guardo en $t6 el valor del indice del arreglo
   	   	   	
   	li $s4, 0	#i=0
